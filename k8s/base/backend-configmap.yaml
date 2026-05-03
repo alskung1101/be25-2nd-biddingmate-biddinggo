@@ -11,5 +11,7 @@ data:
   DB_NAME: biddinggo
   REDIS_HOST: biddinggo-redis
   REDIS_PORT: "6379"
-  FRONTEND_REDIRECT_URI: http://localhost:5173/auth/callback
-  FRONTEND_URL: http://localhost:*,http://127.0.0.1:*
+  GOOGLE_REDIRECT_URI: http://localhost:30080/login/oauth2/code/google
+  KAKAO_REDIRECT_URI: http://localhost:30080/login/oauth2/code/kakao
+  FRONTEND_REDIRECT_URI: http://localhost:30080/auth/callback
+  FRONTEND_URL: http://localhost:30080,http://127.0.0.1:30080
