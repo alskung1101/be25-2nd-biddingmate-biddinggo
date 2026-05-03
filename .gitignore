@@ -39,7 +39,9 @@ out/
 ### env 파일 ###
 .env
 *.env
+.env.*
 k8s/*secret*.yaml
+**/*secret*.yaml
 
 AGENTS.md
 

@@ -15,7 +15,7 @@ Secrets are intentionally not committed. Create them from local values before ap
 .\scripts\create-k8s-secrets.ps1
 kubectl apply -k k8s
 kubectl rollout status deployment/biddinggo-backend -n biddinggo
-curl.exe -i http://localhost:30088/actuator/health
+curl.exe -i http://localhost:30080/actuator/health
 ```
 
 ## Docker Hub / Argo CD
@@ -41,6 +41,7 @@ kubectl apply -k k8s/dockerhub
 - MariaDB and Redis use StatefulSets with PVCs so data survives Pod recreation in the local cluster.
 - The default backend image uses `imagePullPolicy: Never` for local Docker Desktop Kubernetes.
 - The `dockerhub` overlay changes the backend image to Docker Hub and sets `imagePullPolicy: IfNotPresent`.
+- Backend traffic is routed through the local Nginx Ingress Controller on `http://localhost:30080`.
 
 ## Jenkins Credentials
 
