@@ -47,7 +47,7 @@ kubectl apply -k k8s/dockerhub
 The root `Jenkinsfile` expects these Jenkins credentials:
 
 - `dockerhub-access`: Docker Hub username/password or access token for pushing `alskung/biddinggo-backend`.
-- `github-token`: GitHub username/token credential for committing the updated image tag back to this repository.
+- `github-token-biddinggo`: GitHub username/token credential for committing the updated image tag back to this repository.
 
 The Jenkins pipeline uses `alskung/biddinggo-jenkins-agent:latest` as its Kubernetes agent image.
 Build and push it before running the pipeline:

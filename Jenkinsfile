@@ -37,7 +37,7 @@ spec:
     environment {
         DOCKER_IMAGE = 'alskung/biddinggo-backend'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-access'
-        GITHUB_CREDENTIALS_ID = 'github-token'
+        GITHUB_CREDENTIALS_ID = 'github-token-biddinggo'
         KUSTOMIZATION_FILE = 'k8s/dockerhub/kustomization.yaml'
         GIT_REPO_URL = 'github.com/alskung1101/be25-2nd-biddingmate-biddinggo.git'
     }
