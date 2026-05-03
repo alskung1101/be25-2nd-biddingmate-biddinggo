@@ -1,5 +1,7 @@
 pipeline {
-    agent 'biddinggo-build-agent'
+    agent {
+            label 'biddinggo-build-agent'
+        }
 
     parameters {
         string(name: 'DOCKER_IMAGE_VERSION', defaultValue: '', description: 'Docker image tag. Empty value uses the current Git short SHA.')
