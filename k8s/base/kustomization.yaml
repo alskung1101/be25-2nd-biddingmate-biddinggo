@@ -9,4 +9,3 @@ resources:
   - backend-configmap.yaml
   - backend-deployment.yaml
   - backend-service.yaml
-  - backend-ingress.yaml
