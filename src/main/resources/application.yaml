@@ -6,6 +6,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
 management:
+  info:
+    env:
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -22,3 +25,7 @@ logging:
     '[org.mariadb.jdbc.client.impl]': info
     '[org.springframework.data.redis]': info
     '[io.lettuce.core]': info
+
+info:
+  app:
+    deploy-check: argocd-rolling-update-test
