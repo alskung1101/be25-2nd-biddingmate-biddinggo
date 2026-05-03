@@ -38,6 +38,8 @@ out/
 
 ### env 파일 ###
 .env
+*.env
+k8s/*secret*.yaml
 
 AGENTS.md
 

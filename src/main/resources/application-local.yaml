@@ -1,18 +1,22 @@
 server:
-  port: ${LOCAL_PORT}
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:biddinggo}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:1234}
   data:
     redis:
       host: ${REDIS_HOST:localhost}
-      username: ${REDIS_USERNAME}
-      password: ${REDIS_PASSWORD}
       port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
 
   flyway:
     enabled: true

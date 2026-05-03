@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: biddinggo-backend
+  namespace: biddinggo
+spec:
+  template:
+    spec:
+      containers:
+        - name: backend
+          imagePullPolicy: IfNotPresent

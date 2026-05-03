@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: biddinggo-mariadb
+  namespace: biddinggo
+  labels:
+    app: biddinggo-mariadb
+spec:
+  serviceName: biddinggo-mariadb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: biddinggo-mariadb
+  template:
+    metadata:
+      labels:
+        app: biddinggo-mariadb
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: mariadb
+          image: mariadb:11
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: TZ
+              value: Asia/Seoul
+            - name: MARIADB_DATABASE
+              value: biddinggo
+            - name: MARIADB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: biddinggo-mariadb-secret
+                  key: MARIADB_USER
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: biddinggo-mariadb-secret
+                  key: MARIADB_PASSWORD
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: biddinggo-mariadb-secret
+                  key: MARIADB_ROOT_PASSWORD
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - mariadb-admin ping -h 127.0.0.1 -u"$MARIADB_USER" -p"$MARIADB_PASSWORD"
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - mariadb-admin ping -h 127.0.0.1 -u"$MARIADB_USER" -p"$MARIADB_PASSWORD"
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - mariadb-admin ping -h 127.0.0.1 -u"$MARIADB_USER" -p"$MARIADB_PASSWORD"
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: mariadb-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
