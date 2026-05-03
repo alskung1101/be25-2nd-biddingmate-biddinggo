@@ -41,3 +41,10 @@ kubectl apply -k k8s/dockerhub
 - MariaDB and Redis use StatefulSets with PVCs so data survives Pod recreation in the local cluster.
 - The default backend image uses `imagePullPolicy: Never` for local Docker Desktop Kubernetes.
 - The `dockerhub` overlay changes the backend image to Docker Hub and sets `imagePullPolicy: IfNotPresent`.
+
+## Jenkins Credentials
+
+The root `Jenkinsfile` expects these Jenkins credentials:
+
+- `dockerhub-credentials`: Docker Hub username/password or access token for pushing `alskung/biddinggo-backend`.
+- `github-token`: GitHub username/token credential for committing the updated image tag back to this repository.
