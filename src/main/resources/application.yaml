@@ -28,4 +28,4 @@ logging:
 
 info:
   app:
-    deploy-check: argocd-rolling-update-test
+    deploy-check: github-webhook-auto-build-test
