@@ -3,6 +3,10 @@ kind: Application
 metadata:
   name: biddinggo
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.discord: biddinggo-discord
+    notifications.argoproj.io/subscribe.on-sync-failed.discord: biddinggo-discord
+    notifications.argoproj.io/subscribe.on-health-degraded.discord: biddinggo-discord
 spec:
   project: default
   source:
