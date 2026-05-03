@@ -49,7 +49,26 @@ spec:
             }
         }
 
+        stage('Check Skip CI') {
+            steps {
+                script {
+                    env.SKIP_CI = sh(
+                        script: "git log -1 --pretty=%B | grep -qi '\\[skip ci\\]' && echo true || echo false",
+                        returnStdout: true
+                    ).trim()
+
+                    if (env.SKIP_CI == 'true') {
+                        currentBuild.displayName = "#${env.BUILD_NUMBER} skipped"
+                        echo "Skip CI commit detected. Build stages will be skipped."
+                    }
+                }
+            }
+        }
+
         stage('Resolve Version') {
+            when {
+                expression { return env.SKIP_CI != 'true' }
+            }
             steps {
                 script {
                     def shortSha = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
@@ -61,6 +80,9 @@ spec:
         }
 
         stage('Build App') {
+            when {
+                expression { return env.SKIP_CI != 'true' }
+            }
             steps {
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean bootJar -x test'
@@ -68,6 +90,9 @@ spec:
         }
 
         stage('Build Docker Image') {
+            when {
+                expression { return env.SKIP_CI != 'true' }
+            }
             steps {
                 sh '''
                     docker version
@@ -81,7 +106,7 @@ spec:
 
         stage('Push Docker Image') {
             when {
-                expression { return params.PUSH_IMAGE }
+                expression { return params.PUSH_IMAGE && env.SKIP_CI != 'true' }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
@@ -97,7 +122,7 @@ spec:
 
         stage('Update K8s Manifest') {
             when {
-                expression { return params.UPDATE_MANIFEST }
+                expression { return params.UPDATE_MANIFEST && env.SKIP_CI != 'true' }
             }
             steps {
                 script {
@@ -131,22 +156,34 @@ spec:
     post {
         success {
             echo "CI pipeline completed. Image: ${env.DOCKER_IMAGE}:${env.IMAGE_TAG}"
-            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
-                sh '''
-                    curl -H "Content-Type: application/json" \
-                      -d "{\\"content\\":\\"[Jenkins] CI 성공 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
-                      "${DISCORD_WEBHOOK_URL}"
-                '''
+            script {
+                if (env.SKIP_CI == 'true') {
+                    echo "Discord notification skipped for [skip ci] commit."
+                } else {
+                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                        sh '''
+                            curl -H "Content-Type: application/json" \
+                              -d "{\\"content\\":\\"[Jenkins] CI 성공 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
+                              "${DISCORD_WEBHOOK_URL}"
+                        '''
+                    }
+                }
             }
         }
         failure {
             echo "CI pipeline failed. Check the stage logs above."
-            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
-                sh '''
-                    curl -H "Content-Type: application/json" \
-                      -d "{\\"content\\":\\"[Jenkins] CI 실패 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
-                      "${DISCORD_WEBHOOK_URL}"
-                '''
+            script {
+                if (env.SKIP_CI == 'true') {
+                    echo "Discord failure notification skipped for [skip ci] commit."
+                } else {
+                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                        sh '''
+                            curl -H "Content-Type: application/json" \
+                              -d "{\\"content\\":\\"[Jenkins] CI 실패 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
+                              "${DISCORD_WEBHOOK_URL}"
+                        '''
+                    }
+                }
             }
         }
     }
