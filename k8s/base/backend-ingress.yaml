@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: biddinggo-backend-ingress
+  namespace: biddinggo
+  labels:
+    app: biddinggo-backend
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: biddinggo-backend-service
+                port:
+                  name: http
