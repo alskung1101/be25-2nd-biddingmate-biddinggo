@@ -131,9 +131,23 @@ spec:
     post {
         success {
             echo "CI pipeline completed. Image: ${env.DOCKER_IMAGE}:${env.IMAGE_TAG}"
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                sh '''
+                    curl -H "Content-Type: application/json" \
+                      -d "{\\"content\\":\\"[Jenkins] CI 성공 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
+                      "${DISCORD_WEBHOOK_URL}"
+                '''
+            }
         }
         failure {
             echo "CI pipeline failed. Check the stage logs above."
+            withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                sh '''
+                    curl -H "Content-Type: application/json" \
+                      -d "{\\"content\\":\\"[Jenkins] CI 실패 - Job: ${JOB_NAME} #${BUILD_NUMBER} - Image: ${DOCKER_IMAGE}:${IMAGE_TAG:-unknown} - Branch: ${BRANCH_NAME:-feature/deploy-setup}\\"}" \
+                      "${DISCORD_WEBHOOK_URL}"
+                '''
+            }
         }
     }
 }
