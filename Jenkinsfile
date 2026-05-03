@@ -1,5 +1,32 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+    - name: jnlp
+      image: alskung/biddinggo-jenkins-agent:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2"
+          memory: "2Gi"
+      volumeMounts:
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
+'''
+        }
+    }
 
     parameters {
         string(name: 'DOCKER_IMAGE_VERSION', defaultValue: '', description: 'Docker image tag. Empty value uses the current Git short SHA.')
@@ -43,6 +70,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
+                    docker version
                     docker build \
                       -t ${DOCKER_IMAGE}:${IMAGE_TAG} \
                       -t ${DOCKER_IMAGE}:latest \
