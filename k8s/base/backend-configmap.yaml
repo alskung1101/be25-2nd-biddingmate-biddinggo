@@ -11,6 +11,8 @@ data:
   DB_NAME: biddinggo
   REDIS_HOST: biddinggo-redis
   REDIS_PORT: "6379"
+  AUCTION_SCHEDULER_LOCK_KEY: lock:auction-closing-scheduler
+  AUCTION_SCHEDULER_LOCK_TTL_SECONDS: "30"
   GOOGLE_REDIRECT_URI: http://biddinggo.local:30080/login/oauth2/code/google
   KAKAO_REDIRECT_URI: http://biddinggo.local:30080/login/oauth2/code/kakao
   FRONTEND_REDIRECT_URI: http://biddinggo.local:30080/auth/callback

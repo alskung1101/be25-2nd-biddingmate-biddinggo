@@ -79,6 +79,10 @@ jwt:
   secret: ${JWT_SECRET_KEY}
 
 auction:
+  scheduler:
+    lock:
+      key: ${AUCTION_SCHEDULER_LOCK_KEY:lock:auction-closing-scheduler}
+      ttl-seconds: ${AUCTION_SCHEDULER_LOCK_TTL_SECONDS:30}
   prediction:
     price:
       min-reference-count: ${AUCTION_PREDICTION_MIN_REFERENCE_COUNT:1}
