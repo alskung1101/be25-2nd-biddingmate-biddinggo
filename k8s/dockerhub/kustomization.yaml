@@ -5,6 +5,6 @@ resources:
 images:
   - name: biddinggo-backend
     newName: docker.io/alskung/biddinggo-backend
-    newTag: 5f7fd24
+    newTag: 8c6ec75
 patches:
   - path: backend-image-pull-policy.yaml
