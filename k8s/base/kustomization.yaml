@@ -1,12 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - mariadb-service.yaml
-  - mariadb-statefulset.yaml
-  - redis-service.yaml
-  - redis-statefulset.yaml
-  - backend-configmap.yaml
-  - backend-deployment.yaml
-  - backend-service.yaml
-  - backend-pod-disruption-budget.yaml
+  - common/namespace.yaml
+  - database/mariadb/service.yaml
+  - database/mariadb/statefulset.yaml
+  - cache/redis/service.yaml
+  - cache/redis/statefulset.yaml
+  - backend/configmap.yaml
+  - backend/deployment.yaml
+  - backend/service.yaml
+  - backend/pod-disruption-budget.yaml
