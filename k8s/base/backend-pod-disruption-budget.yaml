@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: biddinggo-backend-pdb
+  namespace: biddinggo
+  labels:
+    app: biddinggo-backend
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: biddinggo-backend

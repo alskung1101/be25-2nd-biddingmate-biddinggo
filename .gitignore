@@ -47,3 +47,4 @@ AGENTS.md
 
 .gradle-user-home
 .DS_Store
+.argocd-deploy-keys/
