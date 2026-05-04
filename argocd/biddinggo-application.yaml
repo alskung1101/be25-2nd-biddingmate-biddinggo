@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/alskung1101/be25-2nd-biddingmate-biddinggo.git
+    repoURL: git@github.com:alskung1101/be25-2nd-biddingmate-biddinggo.git
     targetRevision: feature/deploy-setup
     path: k8s/dockerhub
   destination:
