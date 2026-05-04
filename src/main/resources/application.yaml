@@ -25,7 +25,3 @@ logging:
     '[org.mariadb.jdbc.client.impl]': info
     '[org.springframework.data.redis]': info
     '[io.lettuce.core]': info
-
-info:
-  app:
-    deploy-check: github-webhook-auto-build-test
